@@ -61,5 +61,5 @@ alias catkin_eclipse='catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles
 
 # BAXTER SHORTCUTS
 
-alias be='rostopic pub /robot/set_super_enable std_msgs/Bool True'
-alias bd='rostopic pub /robot/set_super_enable std_msgs/Bool False'
+alias be='rostopic pub -1 /robot/set_super_enable std_msgs/Bool True'
+alias bd='rostopic pub -1 /robot/set_super_enable std_msgs/Bool False'
