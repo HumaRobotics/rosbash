@@ -56,7 +56,7 @@ alias groovy='rosshell source /opt/ros/groovy/setup.bash'
 alias devel='rosshell source devel/setup.bash'
 alias install='rosshell source install/setup.bash'
 
-alias cm='catkin_make'
+alias cm='(roscd;cd ..; catkin_make)'
 alias catkin_eclipse='catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles"'
 
 # BAXTER SHORTCUTS
