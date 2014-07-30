@@ -57,8 +57,8 @@ alias devel='rosshell source devel/setup.bash'
 alias install='rosshell source install/setup.bash'
 
 alias cm='(roscd;cd ..; catkin_make)'
-alias catkin_eclipse='catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles"'
-
+alias catkin_eclipse='(roscd;cd ..; catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles")'
+alias pydev='python $(rospack find mk)/make_pydev_project.py'
 # BAXTER SHORTCUTS
 
 alias be='rostopic pub -1 /robot/set_super_enable std_msgs/Bool True'
