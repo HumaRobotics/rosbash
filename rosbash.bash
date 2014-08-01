@@ -55,6 +55,7 @@ alias hydro='rosshell source /opt/ros/hydro/setup.bash'
 alias groovy='rosshell source /opt/ros/groovy/setup.bash'
 alias devel='rosshell source devel/setup.bash'
 alias install='rosshell source install/setup.bash'
+alias install_deps="(roscd;cd ..;rosdep install --from-paths src --ignore-src --rosdistro hydro)"
 
 alias cm='(roscd;cd ..; catkin_make)'
 alias catkin_eclipse='(roscd;cd ..; catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles")'
