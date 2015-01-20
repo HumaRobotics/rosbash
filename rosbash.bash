@@ -51,12 +51,14 @@ rosshell() {
 # ENVIRONMENT AND SOURCING
 
 alias ros=' env | egrep "ROS_.*=|PYTHONPATH|LD_LIBRARY" '
+alias indigo='rosshell source /opt/ros/indigo/setup.bash'
 alias hydro='rosshell source /opt/ros/hydro/setup.bash'
 alias groovy='rosshell source /opt/ros/groovy/setup.bash'
 alias devel='rosshell source devel/setup.bash'
 alias install='rosshell source install/setup.bash'
 alias install_deps="(roscd;cd ..;rosdep install --from-paths src --ignore-src --rosdistro hydro)"
 
+alias rosrefresh='(roscd;cd ..; rospack profile)'
 alias cm='(roscd;cd ..; catkin_make)'
 alias catkin_eclipse='(roscd;cd ..; catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles")'
 alias pydev='python $(rospack find mk)/make_pydev_project.py'
@@ -64,3 +66,6 @@ alias pydev='python $(rospack find mk)/make_pydev_project.py'
 
 alias be='rostopic pub -1 /robot/set_super_enable std_msgs/Bool True'
 alias bd='rostopic pub -1 /robot/set_super_enable std_msgs/Bool False'
+
+alias gkill='killall gzserver ; killall gzclient ; pkill -9 -f "python /opt/ros/" '
+alias rkill='pkill -9 -f "python /opt/ros/" ; gkill'
