@@ -69,3 +69,10 @@ alias bd='rostopic pub -1 /robot/set_super_enable std_msgs/Bool False'
 
 alias gkill='killall gzserver ; killall gzclient ; pkill -9 -f "python /opt/ros/" '
 alias rkill='pkill -9 -f "python /opt/ros/" ; gkill'
+
+
+_urdfshow() {
+    roslaunch urdf_tutorial display.launch gui:=true model:=$1
+}
+
+alias urdfshow=_urdfshow
