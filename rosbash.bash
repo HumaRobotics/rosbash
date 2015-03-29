@@ -32,7 +32,10 @@ roshostname() {
 
 rosprompt() {
     MASTER=`echo $ROS_MASTER_URI  | sed 's/http:\/\///' | sed 's/:11311//'`
-    export PS1='\[\033[0;31m\]ROS \[\033[0;34m\]$ROS_DISTRO\[\033[0;32m\]@$MASTER\[\033[0m\]:\[\033[0;36m\]\w\[\033[0m\]> '
+
+    # Extract top folder last componentent
+    ROSPATHNAME=`(roscd;cd ..; pwd | sed -e "s/.*\///g"  )`
+    export PS1='\[\033[0;31m\]$ROS_DISTRO \[\033[0;34m\]$ROSPATHNAME\[\033[0;32m\]@$MASTER\[\033[0m\]:\[\033[0;36m\]\w\[\033[0m\]> '
 }
 
 
