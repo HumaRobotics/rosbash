@@ -32,7 +32,10 @@ roshostname() {
 
 rosprompt() {
     MASTER=`echo $ROS_MASTER_URI  | sed 's/http:\/\///' | sed 's/:11311//'`
-    export PS1='\[\033[0;31m\]ROS \[\033[0;34m\]$ROS_DISTRO\[\033[0;32m\]@$MASTER\[\033[0m\]:\[\033[0;36m\]\w\[\033[0m\]> '
+
+    # Extract top folder last componentent
+    ROSPATHNAME=`(roscd;cd ..; pwd | sed -e "s/.*\///g"  )`
+    export PS1='\[\033[0;31m\]$ROS_DISTRO \[\033[0;34m\]$ROSPATHNAME\[\033[0;32m\]@$MASTER\[\033[0m\]:\[\033[0;36m\]\w\[\033[0m\]> '
 }
 
 
@@ -66,6 +69,9 @@ alias pydev='python $(rospack find mk)/make_pydev_project.py'
 
 alias be='rostopic pub -1 /robot/set_super_enable std_msgs/Bool True'
 alias bd='rostopic pub -1 /robot/set_super_enable std_msgs/Bool False'
+alias de='rostopic pub -1 /darwin/setCmdEnable std_msgs/Bool True'
+alias dd='rostopic pub -1 /darwin/setCmdEnable std_msgs/Bool False'
+
 
 alias gkill='killall gzserver ; killall gzclient ; pkill -9 -f "python /opt/ros/" '
 alias rkill='pkill -9 -f "python /opt/ros/" ; gkill'
