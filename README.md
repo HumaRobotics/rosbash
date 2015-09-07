@@ -45,7 +45,7 @@ The next commands allow you to manipulate the environment variables:
     roshostname titan.local     # Set ROS_HOSTNAME to titan.local and remove ROS_IP
     rosip 192.168.0.1     # Set ROS_IP to 192.168.0.1 and remove ROS_HOSTNAME
     
-### Other commands
+### Other useful commands
 
     cm     # Finds the root folder of your workspace, run catkin_make and comes back to current folder
     rosrefresh    # Rebuilds the index of packages in your workspace (useful if your packages are not seen)
@@ -55,12 +55,3 @@ The next commands allow you to manipulate the environment variables:
 
     be     # Enable Baxter robot
     bd     # Disable Baxter robot
-    
-    urdfshow baxter.urdf     # Display the URDF model in the GUI
-    
-
-
-
-    
-    
-    
