@@ -84,3 +84,9 @@ _urdfshow() {
 alias urdfshow=_urdfshow
 alias make-eclipse-project='cmake -G "Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug'
 alias rosdep_indigo='rosdep install -r --from-paths src --ignore-src --rosdistro indigo -y'
+
+myBaxter() {
+  cd ~/ros_ws   #change this path according to your baxter workspace
+  ./baxter.sh $1
+}
+alias baxter=myBaxter
