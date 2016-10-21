@@ -49,7 +49,14 @@ rosshell() {
     bash --rcfile $F    
 }
 
+urdf_display() {
+    roslaunch urdf_tutorial display.launch gui:=True model:=$1
+}
 
+xacro_display() {
+    rosrun xacro xacro "$1" >"$1.urdf"
+    roslaunch urdf_tutorial display.launch gui:=True model:="$1.urdf"
+}
 
 # ENVIRONMENT AND SOURCING
 
