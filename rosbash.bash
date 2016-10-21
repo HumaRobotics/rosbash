@@ -76,6 +76,9 @@ alias pydev='python $(rospack find mk)/make_pydev_project.py'
 
 alias be='rostopic pub -1 /robot/set_super_enable std_msgs/Bool True'
 alias bd='rostopic pub -1 /robot/set_super_enable std_msgs/Bool False'
+#alias de='rostopic pub -1 /darwin/setCmdEnable std_msgs/Bool True'
+#alias dd='rostopic pub -1 /darwin/setCmdEnable std_msgs/Bool False'
+
 
 alias gkill='killall gzserver ; killall gzclient ; pkill -9 -f "python /opt/ros/" '
 alias rkill='pkill -9 -f "python /opt/ros/" ; gkill'
@@ -86,3 +89,11 @@ _urdfshow() {
 }
 
 alias urdfshow=_urdfshow
+alias make-eclipse-project='cmake -G "Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug'
+alias rosdep_indigo='rosdep install -r --from-paths src --ignore-src --rosdistro indigo -y'
+
+myBaxter() {
+  cd ~/ros_ws   #change this path according to your baxter workspace
+  ./baxter.sh $1
+}
+alias baxter=myBaxter
