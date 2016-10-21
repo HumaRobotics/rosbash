@@ -49,7 +49,8 @@ The next commands allow you to manipulate the environment variables:
 
     cm     # Finds the root folder of your workspace, run catkin_make and comes back to current folder
     rosrefresh    # Rebuilds the index of packages in your workspace (useful if your packages are not seen)
-    urdfshow baxter.urdf     # Display the URDF model in the GUI
+    urdf_show baxter.urdf     # Display the URDF model in the GUI
+    xacro_show baxter.xacro     # Generates the URDF from XACRO and display it in GUI
     
 ### Robot-specific commands
 
