@@ -84,11 +84,6 @@ alias gkill='killall gzserver ; killall gzclient ; pkill -9 -f "python /opt/ros/
 alias rkill='pkill -9 -f "python /opt/ros/" ; gkill'
 
 
-_urdfshow() {
-    roslaunch urdf_tutorial display.launch gui:=true model:=$1
-}
-
-alias urdfshow=_urdfshow
 alias make-eclipse-project='cmake -G "Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug'
 alias rosdep_indigo='rosdep install -r --from-paths src --ignore-src --rosdistro indigo -y'
 
