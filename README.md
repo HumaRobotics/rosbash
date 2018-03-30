@@ -6,8 +6,11 @@ ROSBash provides a set of aliases and bash functions to make it more user friend
 
 Simply source the *rosbash.bash* script in your *~/.bashrc*:
 
-    # Add an empty line, add the source command
-    echo >> ~/.bashrc && echo source `pwd`/rosbash.bash >> ~/.bashrc
+```bash
+# Add an empty line, add the source command
+echo >> ~/.bashrc && echo source `pwd`/rosbash.bash >> ~/.bashrc
+source ~/.bashrc
+```
     
 Restart your shell for the changes to take effect.
 
@@ -15,42 +18,54 @@ Restart your shell for the changes to take effect.
 ### Loading ROS environments
 Specific ROS environments can be loaded directly in a subshell with a dedicated prompt. This is handy when you need to often switch your environment:
 
-    groovy
-    indigo
-    hydro
-    kinetic
+```bash
+groovy
+indigo
+hydro
+kinetic
+```
+
 The following commands start a new shell with a workspace environment (either devel or install) for instance:
 
-    cd ~/ros_ws
-    devel
+```bash
+cd ~/ros_ws
+devel
+```
 
 or
 
-    cd ~/ros_ws
-    install
+```bash
+cd ~/ros_ws
+install
+```
     
 Any of these shells can be exited with the command *exit* or by pressing *Ctrl-D*.
 
 ### Manipulating ROS environment variables
 The following commands gives you the list of all ROS relevant environment variables, or just those related to the network:
 
-    ros
-    rosnetwork
-
+```bash
+ros
+rosnetwork
+```
 The next commands allow you to manipulate the environment variables:
 
-    rosmaster gita.local     # Set ROS_MASTER_URI to http://gita.local:11311
-    roshostname titan.local     # Set ROS_HOSTNAME to titan.local and remove ROS_IP
-    rosip 192.168.0.1     # Set ROS_IP to 192.168.0.1 and remove ROS_HOSTNAME
+```bash
+rosmaster gita.local     # Set ROS_MASTER_URI to http://gita.local:11311
+roshostname titan.local     # Set ROS_HOSTNAME to titan.local and remove ROS_IP
+rosip 192.168.0.1     # Set ROS_IP to 192.168.0.1 and remove ROS_HOSTNAME
+```
     
 ### Other useful commands
 
-    cm     # Finds the root folder of your workspace, run catkin_make and comes back to current folder
-    rosrefresh    # Rebuilds the index of packages in your workspace (useful if your packages are not seen)
-    urdf_show gita.urdf     # Display the URDF model in the GUI
-    xacro_show gita.xacro     # Generates the URDF from XACRO and display it in GUI
-    rn # rosnode list
-    rni # rosnode info
-    rte # rostopic echo
-    rtl # rostopic list
-    rti # rostopic info
+```bash
+cm     # Finds the root folder of your workspace, run catkin_make and comes back to current folder
+rosrefresh    # Rebuilds the index of packages in your workspace (useful if your packages are not seen)
+urdf_show gita.urdf     # Display the URDF model in the GUI
+xacro_show gita.xacro     # Generates the URDF from XACRO and display it in GUI
+rn # rosnode list
+rni # rosnode info
+rte # rostopic echo
+rtl # rostopic list
+rti # rostopic info
+```
