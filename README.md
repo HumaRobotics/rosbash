@@ -1,15 +1,13 @@
-RosBash
+ROSBash
 ===================
-RosBash provides a set of aliases and bash functions to make it more user friendly when used from the command-line
-
-
+ROSBash provides a set of aliases and bash functions to make it more user friendly when used from the command-line.
 
 ## Installation
 
 Simply source the *rosbash.bash* script in your *~/.bashrc*:
 
-    echo >> ~/.bashrc     # Add an empty line
-    echo source `pwd`/rosbash.bash >> ~/.bashrc    # Add the source command
+    # Add an empty line, add the source command
+    echo >> ~/.bashrc && echo source `pwd`/rosbash.bash >> ~/.bashrc
     
 Restart your shell for the changes to take effect.
 
@@ -20,7 +18,7 @@ Specific ROS environments can be loaded directly in a subshell with a dedicated 
     groovy
     indigo
     hydro
-    
+    kinetic
 The following commands start a new shell with a workspace environment (either devel or install) for instance:
 
     cd ~/ros_ws
@@ -51,8 +49,3 @@ The next commands allow you to manipulate the environment variables:
     rosrefresh    # Rebuilds the index of packages in your workspace (useful if your packages are not seen)
     urdf_show baxter.urdf     # Display the URDF model in the GUI
     xacro_show baxter.xacro     # Generates the URDF from XACRO and display it in GUI
-    
-### Robot-specific commands
-
-    be     # Enable Baxter robot
-    bd     # Disable Baxter robot
