@@ -39,7 +39,7 @@ The following commands gives you the list of all ROS relevant environment variab
 
 The next commands allow you to manipulate the environment variables:
 
-    rosmaster baxter.local     # Set ROS_MASTER_URI to http://baxter.local:11311
+    rosmaster gita.local     # Set ROS_MASTER_URI to http://gita.local:11311
     roshostname titan.local     # Set ROS_HOSTNAME to titan.local and remove ROS_IP
     rosip 192.168.0.1     # Set ROS_IP to 192.168.0.1 and remove ROS_HOSTNAME
     
@@ -47,5 +47,10 @@ The next commands allow you to manipulate the environment variables:
 
     cm     # Finds the root folder of your workspace, run catkin_make and comes back to current folder
     rosrefresh    # Rebuilds the index of packages in your workspace (useful if your packages are not seen)
-    urdf_show baxter.urdf     # Display the URDF model in the GUI
-    xacro_show baxter.xacro     # Generates the URDF from XACRO and display it in GUI
+    urdf_show gita.urdf     # Display the URDF model in the GUI
+    xacro_show gita.xacro     # Generates the URDF from XACRO and display it in GUI
+    rn # rosnode list
+    rni # rosnode info
+    rte # rostopic echo
+    rtl # rostopic list
+    rti # rostopic info
