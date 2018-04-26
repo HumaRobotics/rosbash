@@ -61,8 +61,8 @@ rosip 192.168.0.1     # Set ROS_IP to 192.168.0.1 and remove ROS_HOSTNAME
 ```bash
 cm     # Finds the root folder of your workspace, run catkin_make and comes back to current folder
 rosrefresh    # Rebuilds the index of packages in your workspace (useful if your packages are not seen)
-urdf_show gita.urdf     # Display the URDF model in the GUI
-xacro_show gita.xacro     # Generates the URDF from XACRO and display it in GUI
+urdf_display gita.urdf     # Display the URDF model in the GUI
+xacro_display gita.xacro     # Generates the URDF from XACRO and display it in GUI
 rn # rosnode list
 rni # rosnode info
 rte # rostopic echo
