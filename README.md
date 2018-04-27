@@ -51,7 +51,7 @@ rosnetwork
 The next commands allow you to manipulate the environment variables:
 
 ```bash
-rosmaster gita.local     # Set ROS_MASTER_URI to http://gita.local:11311
+rosmaster my_robot.local     # Set ROS_MASTER_URI to http://my_robot.local:11311
 roshostname titan.local     # Set ROS_HOSTNAME to titan.local and remove ROS_IP
 rosip 192.168.0.1     # Set ROS_IP to 192.168.0.1 and remove ROS_HOSTNAME
 ```
@@ -61,8 +61,8 @@ rosip 192.168.0.1     # Set ROS_IP to 192.168.0.1 and remove ROS_HOSTNAME
 ```bash
 cm     # Finds the root folder of your workspace, run catkin_make and comes back to current folder
 rosrefresh    # Rebuilds the index of packages in your workspace (useful if your packages are not seen)
-urdf_show gita.urdf     # Display the URDF model in the GUI
-xacro_show gita.xacro     # Generates the URDF from XACRO and display it in GUI
+urdf_display my_robot.urdf     # Display the URDF model in the GUI
+xacro_display my_robot.xacro     # Generates the URDF from XACRO and display it in GUI
 rn # rosnode list
 rni # rosnode info
 rte # rostopic echo

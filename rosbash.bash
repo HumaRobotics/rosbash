@@ -31,7 +31,7 @@ rosprompt() {
 
     # Extract top folder last componentent
     ROSPATHNAME=`(roscd;cd ..; pwd | sed -e "s/.*\///g"  )`
-    export PS1='\[\033[0;31m\]$ROS_DISTRO \[\033[0;34m\]$ROSPATHNAME\[\033[0;32m\]@$MASTER\[\033[0m\]:\[\033[0;36m\]\w\[\033[0m\]> '
+    export PS1='\[\033[0;31m\]${ROS_DISTRO[@]:0:1} \[\033[0;34m\]$ROSPATHNAME\[\033[0;32m\]@$MASTER\[\033[0m\]:\[\033[0;36m\]\w\[\033[0m\]> '
 }
 
 # Loads child Bash environment with bashrc, prompt, and any start command as a parameter
