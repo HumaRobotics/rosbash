@@ -7,9 +7,13 @@ ROSBash provides a set of aliases and bash functions to make it more user friend
 Simply source the *rosbash.bash* script in your *~/.bashrc*:
 
 ```bash
+# If installing from GitHub
+git clone git@github.com:Sotilrac/rosbash.git
+cd rosbash
 # Add an empty line, add the source command
 echo >> ~/.bashrc && echo source `pwd`/rosbash.bash >> ~/.bashrc
 source ~/.bashrc
+install_todeb
 ```
     
 Restart your shell for the changes to take effect.
@@ -54,6 +58,13 @@ The next commands allow you to manipulate the environment variables:
 rosmaster my_robot.local     # Set ROS_MASTER_URI to http://my_robot.local:11311
 roshostname titan.local     # Set ROS_HOSTNAME to titan.local and remove ROS_IP
 rosip 192.168.0.1     # Set ROS_IP to 192.168.0.1 and remove ROS_HOSTNAME
+```
+
+### Generating Debian Packages
+```bash
+## once your workspace is sources in a terminal
+todeb ROS_PACKAGE_NAME
+## this will generate a debian package in a folder called deb at the root of your workspace.
 ```
     
 ### Other useful commands
