@@ -1,6 +1,4 @@
 #!/bin/bash
- 
-
 
 # ROS NETWORK CONFIGURATION
 
@@ -26,8 +24,6 @@ roshostname() {
     rosnetwork
 }
 
-
-
 # PROMPT AND SHELL
 
 rosprompt() {
@@ -35,9 +31,8 @@ rosprompt() {
 
     # Extract top folder last componentent
     ROSPATHNAME=`(roscd;cd ..; pwd | sed -e "s/.*\///g"  )`
-    export PS1='\[\033[0;31m\]$ROS_DISTRO \[\033[0;34m\]$ROSPATHNAME\[\033[0;32m\]@$MASTER\[\033[0m\]:\[\033[0;36m\]\w\[\033[0m\]> '
+    export PS1='\[\033[0;31m\]${ROS_DISTRO[@]:0:1} \[\033[0;34m\]$ROSPATHNAME\[\033[0;32m\]@$MASTER\[\033[0m\]:\[\033[0;36m\]\w\[\033[0m\]> '
 }
-
 
 # Loads child Bash environment with bashrc, prompt, and any start command as a parameter
 rosshell() {
@@ -64,31 +59,51 @@ alias ros=' env | egrep "ROS_.*=|PYTHONPATH|LD_LIBRARY" '
 alias indigo='rosshell source /opt/ros/indigo/setup.bash'
 alias hydro='rosshell source /opt/ros/hydro/setup.bash'
 alias groovy='rosshell source /opt/ros/groovy/setup.bash'
+alias kinetic='rosshell source /opt/ros/kinetic/setup.bash'
 alias devel='rosshell source devel/setup.bash'
 alias install='rosshell source install/setup.bash'
 alias install_deps="(roscd;cd ..;rosdep install --from-paths src --ignore-src --rosdistro hydro)"
 
 alias rosrefresh='(roscd;cd ..; rospack profile)'
-alias cm='(roscd;cd ..; catkin_make)'
-alias catkin_eclipse='(roscd;cd ..; catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles")'
 alias pydev='python $(rospack find mk)/make_pydev_project.py'
-# BAXTER SHORTCUTS
 
-alias be='rostopic pub -1 /robot/set_super_enable std_msgs/Bool True'
-alias bd='rostopic pub -1 /robot/set_super_enable std_msgs/Bool False'
-#alias de='rostopic pub -1 /darwin/setCmdEnable std_msgs/Bool True'
-#alias dd='rostopic pub -1 /darwin/setCmdEnable std_msgs/Bool False'
-
-
-alias gkill='killall gzserver ; killall gzclient ; pkill -9 -f "python /opt/ros/" '
-alias rkill='pkill -9 -f "python /opt/ros/" ; gkill'
-
-
-alias make-eclipse-project='cmake -G "Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug'
 alias rosdep_indigo='rosdep install -r --from-paths src --ignore-src --rosdistro indigo -y'
 
-myBaxter() {
-  cd ~/ros_ws   #change this path according to your baxter workspace
-  ./baxter.sh $1
+# SHORTHAND
+alias cm='(roscd && cd ..; catkin_make)'
+alias rn='rosnode list'
+alias rni='rosnode info'
+alias rte='rostopic echo'
+alias rtl='rostopic list'
+alias rti='rostopic info'
+
+# Generates debian package from ROS package name
+todeb() {
+    # Get OS name and codename
+    OS="$(lsb_release -c | cut -f2)"
+    NAME="$(lsb_release -i | cut -f2 | tr "[:upper:]" "[:lower:]")"
+    # Remember current dir
+    ORIG_DIR="$(pwd)"
+    # Create deb dir if necessary and store path
+    DEB_DIR="deb"
+    roscd && cd ..
+    if [ ! -d "$DEB_DIR" ]; then
+        mkdir $DEB_DIR
+    fi
+    DEB_DIR="$(cd $DEB_DIR && pwd)"
+    # Generate debian package
+    roscd $1 &&
+    rm -rf debian obj-*;
+    bloom-generate rosdebian --os-name $NAME --os-version $OS --ros-distro $ROS_DISTRO &&
+    fakeroot debian/rules binary &&
+    # Stores deb package in deb directory.
+    mv ../*.deb $DEB_DIR
+    # Return to initial dir for convenience
+    cd $ORIG_DIR
 }
-alias baxter=myBaxter
+
+install_todeb() {
+    ## Install dependencies for todeb
+    sudo apt update &&
+    sudo apt install python-bloom dpkg-dev debhelper -y
+}
