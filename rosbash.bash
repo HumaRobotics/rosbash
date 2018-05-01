@@ -70,9 +70,40 @@ alias pydev='python $(rospack find mk)/make_pydev_project.py'
 alias rosdep_indigo='rosdep install -r --from-paths src --ignore-src --rosdistro indigo -y'
 
 # SHORTHAND
-alias cm='(roscd;cd ..; catkin_make)'
+alias cm='(roscd && cd ..; catkin_make)'
 alias rn='rosnode list'
 alias rni='rosnode info'
 alias rte='rostopic echo'
 alias rtl='rostopic list'
 alias rti='rostopic info'
+
+# Generates debian package from ROS package name
+todeb() {
+    # Get OS name and codename
+    OS="$(lsb_release -c | cut -f2)"
+    NAME="$(lsb_release -i | cut -f2 | tr "[:upper:]" "[:lower:]")"
+    # Remember current dir
+    ORIG_DIR="$(pwd)"
+    # Create deb dir if necessary and store path
+    DEB_DIR="deb"
+    roscd && cd ..
+    if [ ! -d "$DEB_DIR" ]; then
+        mkdir $DEB_DIR
+    fi
+    DEB_DIR="$(cd $DEB_DIR && pwd)"
+    # Generate debian package
+    roscd $1 &&
+    rm -rf debian obj-*;
+    bloom-generate rosdebian --os-name $NAME --os-version $OS --ros-distro $ROS_DISTRO &&
+    fakeroot debian/rules binary &&
+    # Stores deb package in deb directory.
+    mv ../*.deb $DEB_DIR
+    # Return to initial dir for convenience
+    cd $ORIG_DIR
+}
+
+install_todeb() {
+    ## Install dependencies for todeb
+    sudo apt update &&
+    sudo apt install python-bloom dpkg-dev debhelper -y
+}
