@@ -61,6 +61,7 @@ rosip 192.168.0.1     # Set ROS_IP to 192.168.0.1 and remove ROS_HOSTNAME
 ```
 
 ### Generating Debian Packages
+Based on [these instructions](https://gist.github.com/awesomebytes/196eab972a94dd8fcdd69adfe3bd1152).
 ```bash
 ## once your workspace is sources in a terminal
 todeb ROS_PACKAGE_NAME
