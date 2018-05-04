@@ -8,7 +8,7 @@ Simply source the *rosbash.bash* script in your *~/.bashrc*:
 
 ```bash
 # If installing from GitHub
-git clone git@github.com:Sotilrac/rosbash.git
+git clone ROSBASH_REPO_URL
 cd rosbash
 # Add an empty line, add the source command
 echo >> ~/.bashrc && echo source `pwd`/rosbash.bash >> ~/.bashrc
