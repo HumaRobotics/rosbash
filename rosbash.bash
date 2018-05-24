@@ -83,7 +83,7 @@ todeb() {
     OS="$(lsb_release -c | cut -f2)"
     NAME="$(lsb_release -i | cut -f2 | tr "[:upper:]" "[:lower:]")"
     # Remember current dir
-    ORIG_DIR="$(pwd)"
+    local ORIG_DIR="$(pwd)"
     # Create deb dir if necessary and store path
     DEB_DIR="deb"
     roscd && cd ..
@@ -93,11 +93,59 @@ todeb() {
     DEB_DIR="$(cd $DEB_DIR && pwd)"
     # Generate debian package
     roscd $1 &&
-    rm -rf debian obj-*;
+    # Remove old debian and obj-* dirs
+    rm -rf debian obj-*
+    # Inject private package key resolutions into rosdep
+    inject-rosdeps &&
+    # Generate and build .deb
     bloom-generate rosdebian --os-name $NAME --os-version $OS --ros-distro $ROS_DISTRO &&
     fakeroot debian/rules binary &&
     # Stores deb package in deb directory.
     mv ../*.deb $DEB_DIR
+    # Remove rosdep injections
+    withdraw-rosdeps
+    # Remove new debian and obj-* dirs
+    rm -rf debian obj-*
+    # Return to initial dir for convenience
+    cd $ORIG_DIR
+}
+
+# Inject dependency key resolutions in rosdep for private packages in a catkin workspace
+inject-rosdeps() {
+    # Remember current dir
+    local ORIG_DIR="$(pwd)"
+    # Remove any old injections
+    withdraw-rosdeps
+    # Get OS name and codename
+    OS="$(lsb_release -c | cut -f2)"
+    NAME="$(lsb_release -i | cut -f2 | tr "[:upper:]" "[:lower:]")"
+    # Get packages
+    roscd
+    cd ..
+    PACKS=$(catkin list --quiet -u)
+    # Go to rosdep sources location
+    cd /etc/ros/rosdep/sources.list.d/
+    # Create list file
+    sudo touch 50-injections.list
+    echo "yaml file:///etc/ros/rosdep/sources.list.d/injected-keys.yaml" | sudo tee -a 50-injections.list
+    # Create key resolution yaml
+    sudo touch injected-keys.yaml
+    for pack in $PACKS; do
+        key="ros-${ROS_DISTRO}-$(echo $pack | sed 's/_/-/g')"
+        echo -e "${pack}:\n  $OS:\n    $NAME: [$key]" | sudo tee -a injected-keys.yaml
+    done
+    # Return to initial dir for convenience
+    cd $ORIG_DIR
+}
+
+# Remove injected dependencies from rosdep
+withdraw-rosdeps() {
+    # Remember current dir
+    local ORIG_DIR="$(pwd)"
+    # Go to rosdep sources location
+    cd /etc/ros/rosdep/sources.list.d/
+    # Remote injected files
+    sudo rm -f 50-injections.list injected-keys.yaml
     # Return to initial dir for convenience
     cd $ORIG_DIR
 }
