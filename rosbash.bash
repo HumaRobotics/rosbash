@@ -80,8 +80,8 @@ alias rti='rostopic info'
 # Generates debian package from ROS package name
 todeb() {
     # Get OS name and codename
-    OS="$(lsb_release -c | cut -f2)"
-    NAME="$(lsb_release -i | cut -f2 | tr "[:upper:]" "[:lower:]")"
+    OS_VERSION="$(lsb_release -c | cut -f2)"
+    OS_NAME="$(lsb_release -i | cut -f2 | tr "[:upper:]" "[:lower:]")"
     # Remember current dir
     local ORIG_DIR="$(pwd)"
     # Create deb dir if necessary and store path
@@ -98,7 +98,7 @@ todeb() {
     # Inject private package key resolutions into rosdep
     inject-rosdeps &&
     # Generate and build .deb
-    bloom-generate rosdebian --os-name $NAME --os-version $OS --ros-distro $ROS_DISTRO &&
+    bloom-generate rosdebian --os-name $OS_NAME --os-version $OS_VERSION --ros-distro $ROS_DISTRO &&
     fakeroot debian/rules binary &&
     # Stores deb package in deb directory.
     mv ../*.deb $DEB_DIR
@@ -117,8 +117,8 @@ inject-rosdeps() {
     # Remove any old injections
     withdraw-rosdeps
     # Get OS name and codename
-    OS="$(lsb_release -c | cut -f2)"
-    NAME="$(lsb_release -i | cut -f2 | tr "[:upper:]" "[:lower:]")"
+    OS_VERSION="$(lsb_release -c | cut -f2)"
+    OS_NAME="$(lsb_release -i | cut -f2 | tr "[:upper:]" "[:lower:]")"
     # Get packages
     roscd
     cd ..
@@ -132,7 +132,7 @@ inject-rosdeps() {
     sudo touch injected-keys.yaml
     for pack in $PACKS; do
         key="ros-${ROS_DISTRO}-$(echo $pack | sed 's/_/-/g')"
-        echo -e "${pack}:\n  $NAME:\n    $OS: [$key]" | sudo tee -a injected-keys.yaml
+        echo -e "${pack}:\n  $OS_NAME:\n    $OS_VERSION: [$key]" | sudo tee -a injected-keys.yaml
     done
     # Return to initial dir for convenience
     cd $ORIG_DIR
