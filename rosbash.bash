@@ -132,7 +132,7 @@ inject-rosdeps() {
     sudo touch injected-keys.yaml
     for pack in $PACKS; do
         key="ros-${ROS_DISTRO}-$(echo $pack | sed 's/_/-/g')"
-        echo -e "${pack}:\n  $OS:\n    $NAME: [$key]" | sudo tee -a injected-keys.yaml
+        echo -e "${pack}:\n  $NAME:\n    $OS: [$key]" | sudo tee -a injected-keys.yaml
     done
     # Return to initial dir for convenience
     cd $ORIG_DIR
