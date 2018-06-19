@@ -175,7 +175,7 @@ install-repo-deps() {
     done
 }
 
-# Generate debfiles for all private packages in repo
+# Generate deb files for all private packages in repo; installs them
 all-todeb() {
     # Remember current dir
     local ORIG_DIR="$(pwd)"
