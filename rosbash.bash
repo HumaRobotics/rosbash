@@ -169,10 +169,15 @@ install-rosbash() {
 
 # Install all public deps of a private catkin repo
 install-repo-deps() {
+    # Remember current dir
+    local ORIG_DIR="$(pwd)"
+    roscd && cd ..
     for p in $(catkin list --quiet -u); do
         echo Installing public dependencies for $p...
         rosdep install -i $p
     done
+    # Return to initial dir for convenience
+    cd $ORIG_DIR
 }
 
 # Generate deb files for all private packages in repo; installs them
