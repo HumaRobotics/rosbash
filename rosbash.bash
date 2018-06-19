@@ -2,23 +2,23 @@
 
 # ROS NETWORK CONFIGURATION
 
-rosnetwork() { 
-    env | egrep "ROS_MASTER_URI|ROS_IP|ROS_HOSTNAME" 
+rosnetwork() {
+    env | egrep "ROS_MASTER_URI|ROS_IP|ROS_HOSTNAME"
 }
 
-rosmaster() {    
+rosmaster() {
     export ROS_MASTER_URI=http://$1:11311
     rosnetwork
     rosprompt
 }
 
-rosip() {    
+rosip() {
     export ROS_IP=$1
     unset ROS_HOSTNAME
     rosnetwork
 }
 
-roshostname() {    
+roshostname() {
     export ROS_HOSTNAME=$1
     unset ROS_IP
     rosnetwork
@@ -36,12 +36,12 @@ rosprompt() {
 
 # Loads child Bash environment with bashrc, prompt, and any start command as a parameter
 rosshell() {
-    F=`mktemp`    
+    F=`mktemp`
     echo source ~/.bashrc >> $F
     echo $* >> $F
     echo rosprompt >> $F
     #~ echo ros >> $F
-    bash --rcfile $F    
+    bash --rcfile $F
 }
 
 urdf_display() {
@@ -156,4 +156,12 @@ install_todeb() {
     wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
     sudo apt-get update
     sudo apt-get install python-catkin-tools python-bloom dpkg-dev debhelper -y
+}
+
+# Install all public deps of a private catkin repo
+install-repo-deps() {
+    for p in $(catkin list --quiet -u); do
+        echo Installing public dependencies for $p...
+        rosdep install -i $p
+    done
 }
