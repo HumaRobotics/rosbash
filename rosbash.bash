@@ -185,33 +185,38 @@ all-todeb() {
     # Remember current dir
     local ORIG_DIR="$(pwd)"
     roscd && cd ..
+    rm -rf deb/
     local ALL_BUILT=0
     local SUCCESS=1
-    touch built_pkgs.txt
+    sudo rm -f /run/built_pkgs.txt
+    sudo touch /run/built_pkgs.txt
     while (( ! $ALL_BUILT )); do
-        local NUM_BUILT=$(wc -l < built_pkgs.txt)
+        local NUM_BUILT=$(wc -l < /run/built_pkgs.txt)
         ALL_BUILT=1
-        for p in $(catkin list --quiet -u | grep -Fxv -f built_pkgs.txt); do
+        for p in $(catkin list --quiet -u | grep -Fxv -f /run/built_pkgs.txt); do
             todeb $p
             if (( $? )); then
                 ALL_BUILT=0
             else
-                echo $p >> built_pkgs.txt
                 cd deb
-                sudo dpkg -i $LAST_BUILT_PKG
+                sudo dpkg -i $LAST_BUILT_PKG &&
+                echo $p | sudo tee -a /run/built_pkgs.txt
                 cd -
             fi
         done
-        if [ $NUM_BUILT -eq $(wc -l < built_pkgs.txt) ]; then
+        if [ $NUM_BUILT -eq $(wc -l < /run/built_pkgs.txt) ]; then
             echo All packages cannot be built. Ending construction...
             SUCCESS=0
             break
         fi
     done
-    rm built_pkgs.txt
-    # Return to initial dir for convenience
-    cd $ORIG_DIR
     if (( $SUCCESS )); then
         echo All packages built and installed successfully.
+    else
+        echo The following packages were not built or failed installation:
+        echo $(catkin list --quiet -u | grep -Fxv -f /run/built_pkgs.txt)
     fi
+    sudo rm /run/built_pkgs.txt
+    # Return to initial dir for convenience
+    cd $ORIG_DIR
 }
