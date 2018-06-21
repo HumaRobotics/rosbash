@@ -15,7 +15,7 @@ echo >> ~/.bashrc && echo source `pwd`/rosbash.bash >> ~/.bashrc
 source ~/.bashrc
 install_todeb
 ```
-    
+
 Restart your shell for the changes to take effect.
 
 ## Usage
@@ -42,7 +42,7 @@ or
 cd ~/ros_ws
 install
 ```
-    
+
 Any of these shells can be exited with the command *exit* or by pressing *Ctrl-D*.
 
 ### Manipulating ROS environment variables
@@ -63,13 +63,19 @@ rosip 192.168.0.1     # Set ROS_IP to 192.168.0.1 and remove ROS_HOSTNAME
 ### Generating Debian Packages
 Based on [these instructions](https://gist.github.com/awesomebytes/196eab972a94dd8fcdd69adfe3bd1152).
 ```bash
-# run this one time to install dependencies. Requires sudo
-install_todeb
+## run this one time to install dependencies. Requires sudo
+install-rosbash
 ## once your workspace is sources in a terminal
 todeb ROS_PACKAGE_NAME
 ## this will generate a Debian package in a folder called deb at the root of your workspace.
+
+## to generate Debian packages for all packages in your workspace
+all-todeb
+
+## to install all publicly available dependencies for the packages in your workspace
+install-repo-deps
 ```
-    
+
 ### Other useful commands
 
 ```bash

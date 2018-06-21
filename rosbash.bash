@@ -2,23 +2,23 @@
 
 # ROS NETWORK CONFIGURATION
 
-rosnetwork() { 
-    env | egrep "ROS_MASTER_URI|ROS_IP|ROS_HOSTNAME" 
+rosnetwork() {
+    env | egrep "ROS_MASTER_URI|ROS_IP|ROS_HOSTNAME"
 }
 
-rosmaster() {    
+rosmaster() {
     export ROS_MASTER_URI=http://$1:11311
     rosnetwork
     rosprompt
 }
 
-rosip() {    
+rosip() {
     export ROS_IP=$1
     unset ROS_HOSTNAME
     rosnetwork
 }
 
-roshostname() {    
+roshostname() {
     export ROS_HOSTNAME=$1
     unset ROS_IP
     rosnetwork
@@ -36,12 +36,12 @@ rosprompt() {
 
 # Loads child Bash environment with bashrc, prompt, and any start command as a parameter
 rosshell() {
-    F=`mktemp`    
+    F=`mktemp`
     echo source ~/.bashrc >> $F
     echo $* >> $F
     echo rosprompt >> $F
     #~ echo ros >> $F
-    bash --rcfile $F    
+    bash --rcfile $F
 }
 
 urdf_display() {
@@ -80,17 +80,19 @@ alias rti='rostopic info'
 # Generates debian package from ROS package name
 todeb() {
     # Get OS name and codename
-    OS_VERSION="$(lsb_release -c | cut -f2)"
-    OS_NAME="$(lsb_release -i | cut -f2 | tr "[:upper:]" "[:lower:]")"
+    local OS_VERSION="$(lsb_release -c | cut -f2)"
+    local OS_NAME="$(lsb_release -i | cut -f2 | tr "[:upper:]" "[:lower:]")"
     # Remember current dir
     local ORIG_DIR="$(pwd)"
     # Create deb dir if necessary and store path
-    DEB_DIR="deb"
+    local DEB_DIR="deb"
     roscd && cd ..
     if [ ! -d "$DEB_DIR" ]; then
         mkdir $DEB_DIR
     fi
-    DEB_DIR="$(cd $DEB_DIR && pwd)"
+    local DEB_DIR="$(cd $DEB_DIR && pwd)"
+    # Install public deps
+    rosdep install -i $1
     # Generate debian package
     roscd $1 &&
     # Remove old debian and obj-* dirs
@@ -98,16 +100,23 @@ todeb() {
     # Inject private package key resolutions into rosdep
     inject-rosdeps &&
     # Generate and build .deb
+    local EXIT_STATUS=0
     bloom-generate rosdebian --os-name $OS_NAME --os-version $OS_VERSION --ros-distro $ROS_DISTRO &&
-    fakeroot debian/rules binary &&
-    # Stores deb package in deb directory.
-    mv ../*.deb $DEB_DIR
+    fakeroot debian/rules binary
+    if (( $? )); then
+        local EXIT_STATUS=1
+    else
+        LAST_BUILT_PKG=$(basename ../*.deb)
+        # Stores deb package in deb directory.
+        mv ../*.deb $DEB_DIR
+    fi
     # Remove rosdep injections
     withdraw-rosdeps
     # Remove new debian and obj-* dirs
     rm -rf debian obj-*
     # Return to initial dir for convenience
     cd $ORIG_DIR
+    return $EXIT_STATUS
 }
 
 # Inject dependency key resolutions in rosdep for private packages in a catkin workspace
@@ -117,12 +126,12 @@ inject-rosdeps() {
     # Remove any old injections
     withdraw-rosdeps
     # Get OS name and codename
-    OS_VERSION="$(lsb_release -c | cut -f2)"
-    OS_NAME="$(lsb_release -i | cut -f2 | tr "[:upper:]" "[:lower:]")"
+    local OS_VERSION="$(lsb_release -c | cut -f2)"
+    local OS_NAME="$(lsb_release -i | cut -f2 | tr "[:upper:]" "[:lower:]")"
     # Get packages
     roscd
     cd ..
-    PACKS=$(catkin list --quiet -u)
+    local PACKS=$(catkin list --quiet -u)
     # Go to rosdep sources location
     cd /etc/ros/rosdep/sources.list.d/
     # Create list file
@@ -150,10 +159,64 @@ withdraw-rosdeps() {
     cd $ORIG_DIR
 }
 
-install_todeb() {
-    ## Install dependencies for todeb
+install-rosbash() {
+    ## Install dependencies for some rosbash functions
     sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros-latest.list'
     wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
     sudo apt-get update
     sudo apt-get install python-catkin-tools python-bloom dpkg-dev debhelper -y
+}
+
+# Install all public deps of a private catkin repo
+install-repo-deps() {
+    # Remember current dir
+    local ORIG_DIR="$(pwd)"
+    roscd && cd ..
+    for p in $(catkin list --quiet -u); do
+        echo Installing public dependencies for $p...
+        rosdep install -i $p
+    done
+    # Return to initial dir for convenience
+    cd $ORIG_DIR
+}
+
+# Generate deb files for all private packages in repo; installs them
+all-todeb() {
+    # Remember current dir
+    local ORIG_DIR="$(pwd)"
+    roscd && cd ..
+    rm -rf deb/
+    local ALL_BUILT=0
+    local SUCCESS=1
+    sudo rm -f /run/built_pkgs.txt
+    sudo touch /run/built_pkgs.txt
+    while (( ! $ALL_BUILT )); do
+        local NUM_BUILT=$(wc -l < /run/built_pkgs.txt)
+        ALL_BUILT=1
+        for p in $(catkin list --quiet -u | grep -Fxv -f /run/built_pkgs.txt); do
+            todeb $p
+            if (( $? )); then
+                ALL_BUILT=0
+            else
+                cd deb
+                sudo dpkg -i $LAST_BUILT_PKG &&
+                echo $p | sudo tee -a /run/built_pkgs.txt
+                cd -
+            fi
+        done
+        if [ $NUM_BUILT -eq $(wc -l < /run/built_pkgs.txt) ]; then
+            echo All packages cannot be built. Ending construction...
+            SUCCESS=0
+            break
+        fi
+    done
+    if (( $SUCCESS )); then
+        echo All packages built and installed successfully.
+    else
+        echo The following packages were not built or failed installation:
+        echo $(catkin list --quiet -u | grep -Fxv -f /run/built_pkgs.txt)
+    fi
+    sudo rm /run/built_pkgs.txt
+    # Return to initial dir for convenience
+    cd $ORIG_DIR
 }
