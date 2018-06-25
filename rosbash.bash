@@ -189,6 +189,7 @@ all-todeb() {
         local NUM_BUILT=$(wc -l < /run/built_pkgs.txt)
         ALL_BUILT=1
         for p in $(catkin list --quiet -u | grep -Fxv -f /run/built_pkgs.txt); do
+            todeb $p
             if (( $? )); then
                 ALL_BUILT=0
             else
