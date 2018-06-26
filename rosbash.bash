@@ -39,11 +39,11 @@ rosprompt() {
 }
 
 toggle-hostname() {
-    local PATTERN="^$(hostname) .+$"
+    local PATTERN='^\$\(hostname\) .+$'
     if [[ $PS1 =~ $PATTERN ]]; then
-        export PS1=${PS1#$(hostname) }
+        export PS1=${PS1#\$(hostname) }
     else
-        export PS1="$(hostname) $PS1"
+        export PS1="\$(hostname) $PS1"
     fi
 }
 
