@@ -62,11 +62,12 @@ xacro_display() {
 
 alias ros=' env | egrep "ROS_.*=|PYTHONPATH|LD_LIBRARY" '
 alias indigo='rosshell source /opt/ros/indigo/setup.bash'
-alias hydro='rosshell source /opt/ros/hydro/setup.bash'
-alias groovy='rosshell source /opt/ros/groovy/setup.bash'
+alias kinetic='rosshell source /opt/ros/kinetic/setup.bash'
+# alias hydro='rosshell source /opt/ros/hydro/setup.bash'
+# alias groovy='rosshell source /opt/ros/groovy/setup.bash'
 alias devel='rosshell source devel/setup.bash'
 alias install='rosshell source install/setup.bash'
-alias install_deps="(roscd;cd ..;rosdep install --from-paths src --ignore-src --rosdistro hydro)"
+# alias install_deps="(roscd;cd ..;rosdep install --from-paths src --ignore-src --rosdistro hydro)"
 
 alias rosrefresh='(roscd;cd ..; rospack profile)'
 alias cm='(roscd;cd ..; catkin_make)'
@@ -86,9 +87,10 @@ alias rkill='pkill -9 -f "python /opt/ros/" ; gkill'
 
 alias make-eclipse-project='cmake -G "Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug'
 alias rosdep_indigo='rosdep install -r --from-paths src --ignore-src --rosdistro indigo -y'
+alias rosdep_kinetic='rosdep install -r --from-paths src --ignore-src --rosdistro kinetic -y'
 
-myBaxter() {
-  cd ~/ros_ws   #change this path according to your baxter workspace
-  ./baxter.sh $1
+mySawyer() {
+  cd ~/sawyer_ws   #change this path according to your sawyer workspace
+  ./intera.sh $1
 }
-alias baxter=myBaxter
+alias sawyer=mySawyer
