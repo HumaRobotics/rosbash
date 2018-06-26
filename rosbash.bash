@@ -61,6 +61,8 @@ xacro_display() {
 # ENVIRONMENT AND SOURCING
 
 alias ros=' env | egrep "ROS_.*=|PYTHONPATH|LD_LIBRARY" '
+alias lunar='rosshell source /opt/ros/lunar/setup.bash'
+alias kinetic='rosshell source /opt/ros/kinetic/setup.bash'
 alias indigo='rosshell source /opt/ros/indigo/setup.bash'
 alias kinetic='rosshell source /opt/ros/kinetic/setup.bash'
 # alias hydro='rosshell source /opt/ros/hydro/setup.bash'
@@ -70,7 +72,7 @@ alias install='rosshell source install/setup.bash'
 # alias install_deps="(roscd;cd ..;rosdep install --from-paths src --ignore-src --rosdistro hydro)"
 
 alias rosrefresh='(roscd;cd ..; rospack profile)'
-alias cm='(roscd;cd ..; catkin_make)'
+alias cm='(roscd;cd ..; catkin_make -DCMAKE_BUILD_TYPE=Release)'
 alias catkin_eclipse='(roscd;cd ..; catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles")'
 alias pydev='python $(rospack find mk)/make_pydev_project.py'
 # BAXTER SHORTCUTS
