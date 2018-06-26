@@ -38,8 +38,13 @@ rosprompt() {
     export PS1='\[\033[0;31m\]${ROS_DISTRO[@]:0:1} \[\033[0;34m\]$ROSPATHNAME\[\033[0;32m\]@$MASTER\[\033[0m\]:\[\033[0;36m\]\w\[\033[0m\]\[\033[33m\]$(parse_git_branch)\[\033[00m\]> '
 }
 
-show-hostname() {
-    export PS1="$(hostname) $PS1"
+toggle-hostname() {
+    local PATTERN="^$(hostname) .+$"
+    if [[ $PS1 =~ $PATTERN ]]; then
+        rosprompt
+    else
+        export PS1="$(hostname) $PS1"
+    fi
 }
 
 # Loads child Bash environment with bashrc, prompt, and any start command as a parameter
