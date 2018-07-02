@@ -13,7 +13,7 @@ cd rosbash
 # Add an empty line, add the source command
 echo >> ~/.bashrc && echo source `pwd`/rosbash.bash >> ~/.bashrc
 source ~/.bashrc
-install_todeb
+install_rosbash
 ```
 
 Restart your shell for the changes to take effect.
