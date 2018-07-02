@@ -27,6 +27,8 @@ groovy
 indigo
 hydro
 kinetic
+lunar
+melodic
 ```
 
 The following commands start a new shell with a workspace environment (either devel or install) for instance:
@@ -79,10 +81,11 @@ install-repo-deps
 ### Other useful commands
 
 ```bash
-cm     # Finds the root folder of your workspace, run catkin_make and comes back to current folder
+cm # Finds the root folder of your workspace, run catkin_make and comes back to current folder
 rosrefresh    # Rebuilds the index of packages in your workspace (useful if your packages are not seen)
-urdf_display my_robot.urdf     # Display the URDF model in the GUI
-xacro_display my_robot.xacro     # Generates the URDF from XACRO and display it in GUI
+urdf_display my_robot.urdf # Display the URDF model in the GUI
+xacro_display my_robot.xacro # Generates the URDF from XACRO and display it in GUI
+toggle-hostname # displays/hides local hostname in the prompt 
 rn # rosnode list
 rni # rosnode info
 rte # rostopic echo
