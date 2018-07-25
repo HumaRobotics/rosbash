@@ -85,6 +85,9 @@ alias jade='rosshell source /opt/ros/jade/setup.bash'
 alias indigo='rosshell source /opt/ros/indigo/setup.bash'
 alias hydro='rosshell source /opt/ros/hydro/setup.bash'
 alias groovy='rosshell source /opt/ros/groovy/setup.bash'
+alias kinetic='rosshell source /opt/ros/kinetic/setup.bash'
+alias lunar='rosshell source /opt/ros/lunar/setup.bash'
+alias melodic='rosshell source /opt/ros/melodic/setup.bash'
 
 alias devel='rosshell source devel/setup.bash'
 alias install='rosshell source install/setup.bash'
@@ -96,6 +99,9 @@ alias install_deps="(roscd;cd ..;rosdep install --from-paths src --ignore-src)"
 alias pydev='python $(rospack find mk)/make_pydev_project.py'
 
 alias rosdep_indigo='rosdep install -r --from-paths src --ignore-src --rosdistro indigo -y'
+alias rosdep_kinetic='rosdep install -r --from-paths src --ignore-src --rosdistro kinetic -y'
+alias rosdep_lunar='rosdep install -r --from-paths src --ignore-src --rosdistro lunar -y'
+alias rosdep_melodic='rosdep install -r --from-paths src --ignore-src --rosdistro melodic -y'
 
 # SHORTCUTS
 alias cm='(roscd && cd ..; catkin_make)'
@@ -108,11 +114,6 @@ alias rti='rostopic info'
 alias gkill='killall gzserver ; killall gzclient ; killall rosout ; pkill -9 -f "python /opt/ros/" '
 alias rkill='killall rosout ; pkill -9 -f "python /opt/ros/" ; gkill'
 alias make-eclipse-project='cmake -G "Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug'
-alias rosdep_indigo='rosdep install -r --from-paths src --ignore-src --rosdistro indigo -y'
-alias rosdep_kinetic='rosdep install -r --from-paths src --ignore-src --rosdistro kinetic -y'
-
-
-
 
 # Generates debian package from ROS package name
 todeb() {
@@ -196,9 +197,6 @@ withdraw-rosdeps() {
     # Return to initial dir for convenience
     cd $ORIG_DIR
 }
-
-
-
 
 install-rosbash() {
     ## Install dependencies for some rosbash functions
