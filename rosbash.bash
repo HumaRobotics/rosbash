@@ -7,7 +7,15 @@ rosnetwork() {
 }
 
 rosmaster() {
-    export ROS_MASTER_URI=http://$1:11311
+    if [ $# -eq 0 ]
+    then
+        echo "Setting localhost"
+        export ROS_MASTER_URI=http://localhost:11311
+        unset ROS_IP
+        unset ROS_HOSTNAME
+    else
+        export ROS_MASTER_URI=http://$1:11311    
+    fi
     rosnetwork
     rosprompt
 }
@@ -35,7 +43,7 @@ rosprompt() {
     # Extract top folder last componentent
     ROSPATHNAME=`(roscd;cd ..; pwd | sed -e "s/.*\///g"  )`
 
-    export PS1='\[\033[0;31m\]${ROS_DISTRO[@]:0:1} \[\033[0;34m\]$ROSPATHNAME\[\033[0;32m\]@$MASTER\[\033[0m\]:\[\033[0;36m\]\w\[\033[0m\]\[\033[33m\]$(parse_git_branch)\[\033[00m\]> '
+    export PS1='\[\033[0;31m\]${ROS_DISTRO[@]:0:1} \[\033[0;34m\]$ROSPATHNAME\[\033[33m\]$(parse_git_branch)\[\033[0;32m\]@$MASTER\[\033[0m\]:\[\033[0;36m\]\w\[\033[0m\]\[\033[00m\]> '
 }
 
 toggle-hostname() {
@@ -51,10 +59,10 @@ toggle-hostname() {
 rosshell() {
     F=`mktemp`
     echo source ~/.bashrc >> $F
-    echo $* >> $F
+    echo "$* || exit 1" >> $F
     echo rosprompt >> $F
-    #~ echo ros >> $F
-    bash --rcfile $F
+    echo "env | grep ROS_PACKAGE_PATH" >> $F
+    bash --rcfile $F    
 }
 
 urdf_display() {
@@ -96,6 +104,15 @@ alias rni='rosnode info'
 alias rte='rostopic echo'
 alias rtl='rostopic list'
 alias rti='rostopic info'
+
+alias gkill='killall gzserver ; killall gzclient ; killall rosout ; pkill -9 -f "python /opt/ros/" '
+alias rkill='killall rosout ; pkill -9 -f "python /opt/ros/" ; gkill'
+alias make-eclipse-project='cmake -G "Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug'
+alias rosdep_indigo='rosdep install -r --from-paths src --ignore-src --rosdistro indigo -y'
+alias rosdep_kinetic='rosdep install -r --from-paths src --ignore-src --rosdistro kinetic -y'
+
+
+
 
 # Generates debian package from ROS package name
 todeb() {
@@ -180,9 +197,7 @@ withdraw-rosdeps() {
     cd $ORIG_DIR
 }
 
-alias make-eclipse-project='cmake -G "Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug'
-alias rosdep_indigo='rosdep install -r --from-paths src --ignore-src --rosdistro indigo -y'
-alias rosdep_kinetic='rosdep install -r --from-paths src --ignore-src --rosdistro kinetic -y'
+
 
 
 install-rosbash() {
