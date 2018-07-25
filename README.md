@@ -14,7 +14,6 @@ cd rosbash
 echo >> ~/.bashrc && echo source `pwd`/rosbash.bash >> ~/.bashrc
 source ~/.bashrc
 install-rosbash
- upstream/master
 ```
 
 Restart your shell for the changes to take effect.
