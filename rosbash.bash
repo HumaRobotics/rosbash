@@ -7,7 +7,15 @@ rosnetwork() {
 }
 
 rosmaster() {
-    export ROS_MASTER_URI=http://$1:11311
+    if [ $# -eq 0 ]
+    then
+        echo "Setting localhost"
+        export ROS_MASTER_URI=http://localhost:11311
+        unset ROS_IP
+        unset ROS_HOSTNAME
+    else
+        export ROS_MASTER_URI=http://$1:11311    
+    fi
     rosnetwork
     rosprompt
 }
@@ -35,7 +43,7 @@ rosprompt() {
     # Extract top folder last componentent
     ROSPATHNAME=`(roscd;cd ..; pwd | sed -e "s/.*\///g"  )`
 
-    export PS1='\[\033[0;31m\]${ROS_DISTRO[@]:0:1} \[\033[0;34m\]$ROSPATHNAME\[\033[0;32m\]@$MASTER\[\033[0m\]:\[\033[0;36m\]\w\[\033[0m\]\[\033[33m\]$(parse_git_branch)\[\033[00m\]> '
+    export PS1='\[\033[0;31m\]${ROS_DISTRO[@]:0:1} \[\033[0;34m\]$ROSPATHNAME\[\033[33m\]$(parse_git_branch)\[\033[0;32m\]@$MASTER\[\033[0m\]:\[\033[0;36m\]\w\[\033[0m\]\[\033[00m\]> '
 }
 
 toggle-hostname() {
@@ -51,10 +59,10 @@ toggle-hostname() {
 rosshell() {
     F=`mktemp`
     echo source ~/.bashrc >> $F
-    echo $* >> $F
+    echo "$* || exit 1" >> $F
     echo rosprompt >> $F
-    #~ echo ros >> $F
-    bash --rcfile $F
+    echo "env | grep ROS_PACKAGE_PATH" >> $F
+    bash --rcfile $F    
 }
 
 urdf_display() {
@@ -69,28 +77,43 @@ xacro_display() {
 # ENVIRONMENT AND SOURCING
 
 alias ros=' env | egrep "ROS_.*=|PYTHONPATH|LD_LIBRARY" '
+
+alias melodic='rosshell source /opt/ros/melodic/setup.bash'
+alias lunar='rosshell source /opt/ros/lunar/setup.bash'
+alias kinetic='rosshell source /opt/ros/kinetic/setup.bash'
+alias jade='rosshell source /opt/ros/jade/setup.bash'
 alias indigo='rosshell source /opt/ros/indigo/setup.bash'
 alias hydro='rosshell source /opt/ros/hydro/setup.bash'
 alias groovy='rosshell source /opt/ros/groovy/setup.bash'
 alias kinetic='rosshell source /opt/ros/kinetic/setup.bash'
 alias lunar='rosshell source /opt/ros/lunar/setup.bash'
 alias melodic='rosshell source /opt/ros/melodic/setup.bash'
+
 alias devel='rosshell source devel/setup.bash'
 alias install='rosshell source install/setup.bash'
-alias install_deps="(roscd;cd ..;rosdep install --from-paths src --ignore-src)"
 
 alias rosrefresh='(roscd;cd ..; rospack profile)'
+alias catkin_eclipse='(roscd;cd ..; catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles")'
+alias install_deps="(roscd;cd ..;rosdep install --from-paths src --ignore-src)"
+
 alias pydev='python $(rospack find mk)/make_pydev_project.py'
 
 alias rosdep_indigo='rosdep install -r --from-paths src --ignore-src --rosdistro indigo -y'
+alias rosdep_kinetic='rosdep install -r --from-paths src --ignore-src --rosdistro kinetic -y'
+alias rosdep_lunar='rosdep install -r --from-paths src --ignore-src --rosdistro lunar -y'
+alias rosdep_melodic='rosdep install -r --from-paths src --ignore-src --rosdistro melodic -y'
 
-# SHORTHAND
+# SHORTCUTS
 alias cm='(roscd && cd ..; catkin_make)'
 alias rn='rosnode list'
 alias rni='rosnode info'
 alias rte='rostopic echo'
 alias rtl='rostopic list'
 alias rti='rostopic info'
+
+alias gkill='killall gzserver ; killall gzclient ; killall rosout ; pkill -9 -f "python /opt/ros/" '
+alias rkill='killall rosout ; pkill -9 -f "python /opt/ros/" ; gkill'
+alias make-eclipse-project='cmake -G "Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug'
 
 # Generates debian package from ROS package name
 todeb() {
@@ -174,7 +197,6 @@ withdraw-rosdeps() {
     # Return to initial dir for convenience
     cd $ORIG_DIR
 }
-
 
 install-rosbash() {
     ## Install dependencies for some rosbash functions

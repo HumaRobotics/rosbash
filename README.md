@@ -14,6 +14,7 @@ cd rosbash
 echo >> ~/.bashrc && echo source `pwd`/rosbash.bash >> ~/.bashrc
 source ~/.bashrc
 install-rosbash
+ upstream/master
 ```
 
 Restart your shell for the changes to take effect.
@@ -60,6 +61,7 @@ The next commands allow you to manipulate the environment variables:
 rosmaster my_robot.local     # Set ROS_MASTER_URI to http://my_robot.local:11311
 roshostname titan.local     # Set ROS_HOSTNAME to titan.local and remove ROS_IP
 rosip 192.168.0.1     # Set ROS_IP to 192.168.0.1 and remove ROS_HOSTNAME
+rosmaster           # Reset to localhost, remove ROS_IP/ROS_HOSTNAME and ROS_MASTER to http://localhost:11311
 ```
 
 ### Generating Debian Packages
