@@ -26,12 +26,25 @@ roshostname() {
 
 # PROMPT AND SHELL
 
+parse_git_branch() {
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+}
+
 rosprompt() {
     MASTER=`echo $ROS_MASTER_URI  | sed 's/http:\/\///' | sed 's/:11311//'`
-
     # Extract top folder last componentent
     ROSPATHNAME=`(roscd;cd ..; pwd | sed -e "s/.*\///g"  )`
-    export PS1='\[\033[0;31m\]${ROS_DISTRO[@]:0:1} \[\033[0;34m\]$ROSPATHNAME\[\033[0;32m\]@$MASTER\[\033[0m\]:\[\033[0;36m\]\w\[\033[0m\]> '
+
+    export PS1='\[\033[0;31m\]${ROS_DISTRO[@]:0:1} \[\033[0;34m\]$ROSPATHNAME\[\033[0;32m\]@$MASTER\[\033[0m\]:\[\033[0;36m\]\w\[\033[0m\]\[\033[33m\]$(parse_git_branch)\[\033[00m\]> '
+}
+
+toggle-hostname() {
+    local PATTERN='^\$\(hostname\) .+$'
+    if [[ $PS1 =~ $PATTERN ]]; then
+        export PS1=${PS1#\$(hostname) }
+    else
+        export PS1="\$(hostname) $PS1"
+    fi
 }
 
 # Loads child Bash environment with bashrc, prompt, and any start command as a parameter
@@ -60,9 +73,11 @@ alias indigo='rosshell source /opt/ros/indigo/setup.bash'
 alias hydro='rosshell source /opt/ros/hydro/setup.bash'
 alias groovy='rosshell source /opt/ros/groovy/setup.bash'
 alias kinetic='rosshell source /opt/ros/kinetic/setup.bash'
+alias lunar='rosshell source /opt/ros/lunar/setup.bash'
+alias melodic='rosshell source /opt/ros/melodic/setup.bash'
 alias devel='rosshell source devel/setup.bash'
 alias install='rosshell source install/setup.bash'
-alias install_deps="(roscd;cd ..;rosdep install --from-paths src --ignore-src --rosdistro hydro)"
+alias install_deps="(roscd;cd ..;rosdep install --from-paths src --ignore-src)"
 
 alias rosrefresh='(roscd;cd ..; rospack profile)'
 alias pydev='python $(rospack find mk)/make_pydev_project.py'
@@ -143,6 +158,7 @@ inject-rosdeps() {
         key="ros-${ROS_DISTRO}-$(echo $pack | sed 's/_/-/g')"
         echo -e "${pack}:\n  $OS_NAME:\n    $OS_VERSION: [$key]" | sudo tee -a injected-keys.yaml
     done
+    rosdep update
     # Return to initial dir for convenience
     cd $ORIG_DIR
 }
@@ -159,25 +175,13 @@ withdraw-rosdeps() {
     cd $ORIG_DIR
 }
 
+
 install-rosbash() {
     ## Install dependencies for some rosbash functions
     sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros-latest.list'
     wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
     sudo apt-get update
     sudo apt-get install python-catkin-tools python-bloom dpkg-dev debhelper -y
-}
-
-# Install all public deps of a private catkin repo
-install-repo-deps() {
-    # Remember current dir
-    local ORIG_DIR="$(pwd)"
-    roscd && cd ..
-    for p in $(catkin list --quiet -u); do
-        echo Installing public dependencies for $p...
-        rosdep install -i $p
-    done
-    # Return to initial dir for convenience
-    cd $ORIG_DIR
 }
 
 # Generate deb files for all private packages in repo; installs them
