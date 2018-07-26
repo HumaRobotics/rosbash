@@ -61,7 +61,7 @@ rosshell() {
     echo source ~/.bashrc >> $F
     echo "$* || exit 1" >> $F
     echo rosprompt >> $F
-    echo "env | grep ROS_PACKAGE_PATH" >> $F
+    #echo "env | grep ROS_PACKAGE_PATH" >> $F
     bash --rcfile $F    
 }
 
@@ -78,30 +78,25 @@ xacro_display() {
 
 alias ros=' env | egrep "ROS_.*=|PYTHONPATH|LD_LIBRARY" '
 
-alias melodic='rosshell source /opt/ros/melodic/setup.bash'
-alias lunar='rosshell source /opt/ros/lunar/setup.bash'
-alias kinetic='rosshell source /opt/ros/kinetic/setup.bash'
-alias jade='rosshell source /opt/ros/jade/setup.bash'
-alias indigo='rosshell source /opt/ros/indigo/setup.bash'
-alias hydro='rosshell source /opt/ros/hydro/setup.bash'
-alias groovy='rosshell source /opt/ros/groovy/setup.bash'
-alias kinetic='rosshell source /opt/ros/kinetic/setup.bash'
-alias lunar='rosshell source /opt/ros/lunar/setup.bash'
-alias melodic='rosshell source /opt/ros/melodic/setup.bash'
+ROS_DISTRIBUTIONS="groovy hydro indigo jade kinetic lunac melodic"
+
+for dist in $ROS_DISTRIBUTIONS
+do
+    alias $dist="rosshell source /opt/ros/$dist/setup.bash"
+    alias rosdep_$dist="rosdep install -r --from-paths src --ignore-src --rosdistro $dist -y"
+done
+
 
 alias devel='rosshell source devel/setup.bash'
 alias install='rosshell source install/setup.bash'
 
 alias rosrefresh='(roscd;cd ..; rospack profile)'
-alias catkin_eclipse='(roscd;cd ..; catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles")'
 alias install_deps="(roscd;cd ..;rosdep install --from-paths src --ignore-src)"
 
+alias catkin_eclipse='(roscd;cd ..; catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles")'
+alias make-eclipse-project='cmake -G "Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug'
 alias pydev='python $(rospack find mk)/make_pydev_project.py'
 
-alias rosdep_indigo='rosdep install -r --from-paths src --ignore-src --rosdistro indigo -y'
-alias rosdep_kinetic='rosdep install -r --from-paths src --ignore-src --rosdistro kinetic -y'
-alias rosdep_lunar='rosdep install -r --from-paths src --ignore-src --rosdistro lunar -y'
-alias rosdep_melodic='rosdep install -r --from-paths src --ignore-src --rosdistro melodic -y'
 
 # SHORTCUTS
 alias cm='(roscd && cd ..; catkin_make)'
@@ -113,7 +108,6 @@ alias rti='rostopic info'
 
 alias gkill='killall gzserver ; killall gzclient ; killall rosout ; pkill -9 -f "python /opt/ros/" '
 alias rkill='killall rosout ; pkill -9 -f "python /opt/ros/" ; gkill'
-alias make-eclipse-project='cmake -G "Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug'
 
 # Generates debian package from ROS package name
 todeb() {
