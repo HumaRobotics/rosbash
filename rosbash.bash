@@ -43,15 +43,15 @@ rosprompt() {
     # Extract top folder last componentent
     ROSPATHNAME=`(roscd;cd ..; pwd | sed -e "s/.*\///g"  )`
 
-    export PS1='\[\033[0;31m\]${ROS_DISTRO[@]:0:1} \[\033[0;34m\]$ROSPATHNAME\[\033[33m\]$(parse_git_branch)\[\033[0;32m\]@$MASTER\[\033[0m\]:\[\033[0;36m\]\w\[\033[0m\]\[\033[00m\]> '
+    export PS1='\[\033[0;31m\]${ROS_DISTRO[@]:0:1} \[\033[0;37m\]$(hostname) \[\033[0;34m\]$ROSPATHNAME\[\033[33m\]$(parse_git_branch)\[\033[0;32m\]@$MASTER\[\033[0m\]:\[\033[0;36m\]\w\[\033[0m\]\[\033[00m\]> '
 }
 
 toggle-hostname() {
-    local PATTERN='^\$\(hostname\) .+$'
+    local PATTERN='\$\(hostname\) .+$'
     if [[ $PS1 =~ $PATTERN ]]; then
-        export PS1=${PS1#\$(hostname) }
+        export PS1='\[\033[0;31m\]${ROS_DISTRO[@]:0:1} \[\033[0;34m\]$ROSPATHNAME\[\033[33m\]$(parse_git_branch)\[\033[0;32m\]@$MASTER\[\033[0m\]:\[\033[0;36m\]\w\[\033[0m\]\[\033[00m\]> '
     else
-        export PS1="\$(hostname) $PS1"
+        export PS1='\[\033[0;31m\]${ROS_DISTRO[@]:0:1} \[\033[0;37m\]$(hostname) \[\033[0;34m\]$ROSPATHNAME\[\033[33m\]$(parse_git_branch)\[\033[0;32m\]@$MASTER\[\033[0m\]:\[\033[0;36m\]\w\[\033[0m\]\[\033[00m\]> '
     fi
 }
 
