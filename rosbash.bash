@@ -14,7 +14,7 @@ rosmaster() {
         unset ROS_IP
         unset ROS_HOSTNAME
     else
-        export ROS_MASTER_URI=http://$1:11311    
+        export ROS_MASTER_URI=http://$1:11311
     fi
     rosnetwork
     rosprompt
@@ -62,7 +62,7 @@ rosshell() {
     echo "$* || exit 1" >> $F
     echo rosprompt >> $F
     echo "env | grep ROS_PACKAGE_PATH" >> $F
-    bash --rcfile $F    
+    bash --rcfile $F
 }
 
 urdf_display() {
@@ -94,7 +94,7 @@ alias install='rosshell source install/setup.bash'
 
 alias rosrefresh='(roscd;cd ..; rospack profile)'
 alias catkin_eclipse='(roscd;cd ..; catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles")'
-alias install_deps="(roscd;cd ..;rosdep install --from-paths src --ignore-src)"
+alias install_deps="(roscd;cd ..;rosdep install --from-paths src --ignore-src -y)"
 
 alias pydev='python $(rospack find mk)/make_pydev_project.py'
 
