@@ -79,6 +79,15 @@ all-todeb
 install-repo-deps
 ```
 
+Rosdep keys for private ROS package dependencies are generated automatically when using `todeb` or `all-todeb`, however the packages must be in the workspace for their keys to be generated.
+
+Keys for other private ROS package dependencies must user-defined, in the file `src/rosdep_keys.yaml` inside the ROS workspace. See the key example below:
+```yaml
+yaml_cpp_0_6:
+  ubuntu:
+    xenial: [ros-kinetic-yaml-cpp-0-6]
+```
+
 ### Other useful commands
 
 ```bash

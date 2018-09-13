@@ -181,6 +181,12 @@ inject-rosdeps() {
         key="ros-${ROS_DISTRO}-$(echo $pack | sed 's/_/-/g')"
         echo -e "${pack}:\n  $OS_NAME:\n    $OS_VERSION: [$key]" | sudo tee -a injected-keys.yaml
     done
+    # Add user-defined keys
+    roscd
+    cd ../src/
+    if [ -e rosdep_keys.yaml ]; then
+        cat rosdep_keys.yaml | sudo tee -a /etc/ros/rosdep/sources.list.d/injected-keys.yaml
+    fi
     rosdep update
     # Return to initial dir for convenience
     cd $ORIG_DIR
@@ -216,11 +222,13 @@ all-todeb() {
     local SUCCESS=1
     sudo rm -f /run/built_pkgs.txt
     sudo touch /run/built_pkgs.txt
+    # Inject private package key resolutions into rosdep
+    inject-rosdeps &&
     while (( ! $ALL_BUILT )); do
         local NUM_BUILT=$(wc -l < /run/built_pkgs.txt)
         ALL_BUILT=1
         for p in $(catkin list --quiet -u | grep -Fxv -f /run/built_pkgs.txt); do
-            todeb $p
+            todeb-noinject $p
             if (( $? )); then
                 ALL_BUILT=0
             else
@@ -243,6 +251,45 @@ all-todeb() {
         echo $(catkin list --quiet -u | grep -Fxv -f /run/built_pkgs.txt)
     fi
     sudo rm /run/built_pkgs.txt
+    # Remove rosdep injections
+    withdraw-rosdeps
     # Return to initial dir for convenience
     cd $ORIG_DIR
+}
+
+todeb-noinject() {
+    # Get OS name and codename
+    local OS_VERSION="$(lsb_release -c | cut -f2)"
+    local OS_NAME="$(lsb_release -i | cut -f2 | tr "[:upper:]" "[:lower:]")"
+    # Remember current dir
+    local ORIG_DIR="$(pwd)"
+    # Create deb dir if necessary and store path
+    local DEB_DIR="deb"
+    roscd && cd ..
+    if [ ! -d "$DEB_DIR" ]; then
+        mkdir $DEB_DIR
+    fi
+    local DEB_DIR="$(cd $DEB_DIR && pwd)"
+    # Install public deps
+    rosdep install -i $1
+    # Generate debian package
+    roscd $1 &&
+    # Remove old debian and obj-* dirs
+    rm -rf debian obj-*
+    # Generate and build .deb
+    local EXIT_STATUS=0
+    bloom-generate rosdebian --os-name $OS_NAME --os-version $OS_VERSION --ros-distro $ROS_DISTRO &&
+    fakeroot debian/rules binary
+    if (( $? )); then
+        local EXIT_STATUS=1
+    else
+        LAST_BUILT_PKG=$(basename ../*.deb)
+        # Stores deb package in deb directory.
+        mv ../*.deb $DEB_DIR
+    fi
+    # Remove new debian and obj-* dirs
+    rm -rf debian obj-*
+    # Return to initial dir for convenience
+    cd $ORIG_DIR
+    return $EXIT_STATUS
 }
